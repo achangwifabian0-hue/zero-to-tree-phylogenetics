@@ -14,7 +14,7 @@ To make this repository accessible to beginners on GitHub without requiring exte
 ---
 
 ```markdown
-# 🌳 Zero to Tree: Bacterial Phylogenetics from Scratch
+#  Zero to Tree: Bacterial Phylogenetics from Scratch
 
 [![Platform: Ubuntu/WSL](https://img.shields.io/badge/Platform-Ubuntu%20%7C%20WSL-orange)](https://ubuntu.com/)
 [![Workflow: Snippy + IQ--TREE 2 + iTOL](https://img.shields.io/badge/Workflow-Snippy%20%7C%20IQ--TREE2%20%7C%20iTOL-blue)](https://github.com/tseemann/snippy)
@@ -36,7 +36,7 @@ By the end of this practical guide, you will be able to:
 
 ---
 
-## 🗺️ Pipeline Overview
+## Pipeline Overview
 ```text
 [NCBI Public Database]
          │  (Step 1: Download assemblies)
@@ -61,7 +61,7 @@ By the end of this practical guide, you will be able to:
 
 ---
 
-## 💻 SECTION 0: Prerequisites & Environment Setup
+##  SECTION 0: Prerequisites & Environment Setup
 
 This workflow runs inside an **Ubuntu Linux terminal** (native Linux, macOS, or Windows Subsystem for Linux - WSL).
 
@@ -135,7 +135,7 @@ ls -lh ~/phylogenetic_tree_project/results/chromosomes_only/
 
 ---
 
-## 🔍 SECTION 2: Inspect Genome Assemblies
+## SECTION 2: Inspect Genome Assemblies
 
 Before running calculations, verify file integrity and review sequence structure.
 
@@ -160,9 +160,9 @@ done
 
 ---
 
-## 🧬 SECTION 3: Reference-Based Variant Calling (Snippy)
+##  SECTION 3: Reference-Based Variant Calling (Snippy)
 
-### 💡 The Mental Model
+###  The Mental Model
 Think of the reference genome (**KPPR1**) as the original baseline edition of a dictionary. **Snippy** reads every sentence in your sample genomes (**MS6671**, **NTUH-K2044**, **HS11286**) and notes every spelling change, deletion, or insertion relative to the baseline.
 
 ### 3.1 Execute Snippy for Each Sample
@@ -204,9 +204,9 @@ ls -lh results/snippy_HS11286/
 
 ---
 
-## 🧩 SECTION 4: Build the Core-Genome Alignment (Snippy-core)
+##  SECTION 4: Build the Core-Genome Alignment (Snippy-core)
 
-### 💡 The Mental Model
+###  The Mental Model
 Each Snippy run identified variants for a single isolate against the reference. **Snippy-core** stacks these analyses together to find genomic regions shared across **all** samples (the *core genome*) and compiles them into a single multiple-sequence alignment.
 
 ### 4.1 Run Snippy-core
@@ -235,9 +235,9 @@ seqkit fx2tab -n -l results/core3.aln
 
 ---
 
-## 🌳 SECTION 5: Construct the Tree with IQ-TREE 2
+##  SECTION 5: Construct the Tree with IQ-TREE 2
 
-### 💡 The Mental Model
+###  The Mental Model
 IQ-TREE 2 evaluates evolutionary models using **ModelFinder** and tests thousands of branching patterns to find the tree that best explains your alignment using Maximum Likelihood. It resamples positions 1,000 times (**Ultrafast Bootstrap**) to determine confidence scores for each branch.
 
 ### 5.1 Run Tree Inference
@@ -268,7 +268,7 @@ cat results/klebsiella_tree.treefile
 
 ---
 
-## 🎨 SECTION 6: Format and Visualize in iTOL
+##  SECTION 6: Format and Visualize in iTOL
 
 ### 6.1 Clean Label Prefixes for Display
 By default, sample names in the tree file may retain the folder prefix `snippy_`. Strip this prefix using `sed` to create a clean display tree without altering topology or branch lengths:
@@ -294,7 +294,7 @@ cat results/klebsiella_tree_iTOL.tree
 
 ---
 
-## 🧠 SECTION 7: Scientific Interpretation & Common Traps
+##  SECTION 7: Scientific Interpretation & Common Traps
 
 | Tree Feature | Biological Meaning | ⚠️ Common Beginner Trap to Avoid |
 | :--- | :--- | :--- |
@@ -305,7 +305,7 @@ cat results/klebsiella_tree_iTOL.tree
 
 ---
 
-## 📋 SECTION 8: Scientific Quality-Control Checklist
+##  SECTION 8: Scientific Quality-Control Checklist
 
 Before presenting or publishing results, review this checklist:
 - [ ] Assembly sources and accession numbers are verified.
@@ -319,7 +319,7 @@ Before presenting or publishing results, review this checklist:
 
 ---
 
-## 📝 SECTION 9: Reproducibility Log
+## SECTION 9: Reproducibility Log
 
 Execute this script to capture exact software versions in your results directory:
 ```bash
@@ -339,7 +339,7 @@ cat results/software_versions.txt
 
 ---
 
-## 🛠️ SECTION 10: Troubleshooting FAQ
+##  SECTION 10: Troubleshooting FAQ
 
 <details>
 <summary><b>1. Error: <code>snippy: command not found</code></b></summary>
