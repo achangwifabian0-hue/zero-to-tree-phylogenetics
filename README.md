@@ -373,20 +373,21 @@ Verify that the file names match the commands (`KPPR1.fna`, `MS6671.fna`, `NTUH-
 </details>
 
 ## Official Software Documentation
-•Snippy: https://github.com/tseemann/snippy
-•IQ-TREE 2: https://www.iqtree.org/
-•SeqKit: https://bioinf.shenwei.me/seqkit/
-•iTOL: https://itol.embl.de/
-•AliView: https://ormbunkar.se/aliview/
+• Snippy: https://github.com/tseemann/snippy
+• IQ-TREE 2: https://www.iqtree.org/
+• SeqKit: https://bioinf.shenwei.me/seqkit/
+• iTOL: https://itol.embl.de/
+• AliView: https://ormbunkar.se/aliview/
+
 Course Completion
 You have completed the main workflow when you can:
-1.Inspect the genome assemblies.
-2.Run reference-based variant calling.
-3.Generate and assess a core-genome alignment.
-4.Infer a preliminary tree with IQ-TREE 2.
-5.Display the tree in iTOL.
-6.Explain the basic meaning of topology, branch lengths, and support values.
-7.Identify the quality-control checks needed before drawing scientific conclusions.
+1. Inspect the genome assemblies.
+2. Run reference-based variant calling.
+3. Generate and assess a core-genome alignment.
+4. Infer a preliminary tree with IQ-TREE 2.
+5. Display the tree in iTOL.
+6. Explain the basic meaning of topology, branch lengths, and support values.
+7. Identify the quality-control checks needed before drawing scientific conclusions.
 
 Final reminder: This course is intended for learning and reproducible bioinformatics practice. Do not use a preliminary tree as the sole basis for clinical decisions, outbreak declarations, or transmission claims.
 
