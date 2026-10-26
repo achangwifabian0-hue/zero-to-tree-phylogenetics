@@ -391,6 +391,7 @@ You have completed the main workflow when you can:
 
 Final reminder: This course is intended for learning and reproducible bioinformatics practice. Do not use a preliminary tree as the sole basis for clinical decisions, outbreak declarations, or transmission claims.
 
-This course is design from knowledge gained on phylogenetic tree design and analysis African Stars Fellowship, Institute Pasteur De Dakar and CARE
+## This course is design from knowledge gained on phylogenetic tree design and analysis African Stars Fellowship, Institute Pasteur De Dakar and CARE
+
 Thanks for learning with us
 
