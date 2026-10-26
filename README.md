@@ -395,3 +395,8 @@ Final reminder: This course is intended for learning and reproducible bioinforma
 
 Thanks for learning with us
 
+## Producer
+- Fabian Achangwi
+## Course Facilitators
+- Ndeye Awa NDIAYE
+- Abdoul Wahab Soumare
