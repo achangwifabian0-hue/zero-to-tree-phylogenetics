@@ -372,11 +372,6 @@ ls -lh results/chromosomes_only/
 Verify that the file names match the commands (`KPPR1.fna`, `MS6671.fna`, `NTUH-K2044.fna`, `HS11286.fna`).
 </details>
 
----
-*Course template based on the bacterial phylogenetics workflow using Snippy, IQ-TREE 2, and iTOL*.
-```
-
----
 ## Official Software Documentation
 •Snippy: https://github.com/tseemann/snippy
 •IQ-TREE 2: https://www.iqtree.org/
