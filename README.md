@@ -88,11 +88,12 @@ seqkit version
 
 ### 1.1 Create Your Project Directories
 Create a clean directory structure to organize raw assemblies and downstream results:
-```bash
-mkdir -p ~/phylogenetic_tree_project/results/chromosomes_only
+
+mkdir -p ~/phylogenetic_tree_project/results/genomes
+mkdir -p ~/phylogenetic_tree_project/results/genome_downloads/extracted
 cd ~/phylogenetic_tree_project
 pwd
-```
+
 ### 1.2 Download Genomes from NCBI
 
 This tutorial uses ten *Klebsiella pneumoniae* genome assemblies: one reference genome and nine additional strains. Assembly accessions identify the exact genome records used in the analysis.
@@ -116,53 +117,64 @@ Before analysis, always verify the assembly identity and sequence contents for e
 
 #### Option A: One-Liner Download via NCBI Datasets CLI (Recommended)
 ```bash
+
+
+```bash
 # Move to the project directory
 cd ~/phylogenetic_tree_project
 
-# Sample 1: MS6671
-snippy --ref results/chromosomes_only/KPPR1.fna \
-  --ctgs results/chromosomes_only/MS6671.fna \
-  --outdir results/snippy_MS6671 --cpus 2
+# Create the download directory
+mkdir -p results/genome_downloads
 
-# Sample 2: NTUH-K2044
-snippy --ref results/chromosomes_only/KPPR1.fna \
-  --ctgs results/chromosomes_only/NTUH-K2044.fna \
-  --outdir results/snippy_NTUH-K2044 --cpus 2
+# Download KPPR1
+datasets download genome accession GCF_000742755.1 \
+  --include genome \
+  --filename results/genome_downloads/KPPR1.zip
 
-# Sample 3: HS11286
-snippy --ref results/chromosomes_only/KPPR1.fna \
-  --ctgs results/chromosomes_only/HS11286.fna \
-  --outdir results/snippy_HS11286 --cpus 2
+# Download MS6671
+datasets download genome accession GCF_001455995.1 \
+  --include genome \
+  --filename results/genome_downloads/MS6671.zip
 
-# Sample 4: MGH 78578
-snippy --ref results/chromosomes_only/KPPR1.fna \
-  --ctgs results/chromosomes_only/MGH78578.fna \
-  --outdir results/snippy_MGH78578 --cpus 2
+# Download NTUH-K2044
+datasets download genome accession GCF_000009885.1 \
+  --include genome \
+  --filename results/genome_downloads/NTUH-K2044.zip
 
-# Sample 5: KPNIH10
-snippy --ref results/chromosomes_only/KPPR1.fna \
-  --ctgs results/chromosomes_only/KPNIH10.fna \
-  --outdir results/snippy_KPNIH10 --cpus 2
+# Download HS11286
+datasets download genome accession GCF_000240185.1 \
+  --include genome \
+  --filename results/genome_downloads/HS11286.zip
 
-# Sample 6: KPNIH1
-snippy --ref results/chromosomes_only/KPPR1.fna \
-  --ctgs results/chromosomes_only/KPNIH1.fna \
-  --outdir results/snippy_KPNIH1 --cpus 2
+# Download MGH 78578
+datasets download genome accession GCF_000016305.1 \
+  --include genome \
+  --filename results/genome_downloads/MGH78578.zip
 
-# Sample 7: KPNIH24
-snippy --ref results/chromosomes_only/KPPR1.fna \
-  --ctgs results/chromosomes_only/KPNIH24.fna \
-  --outdir results/snippy_KPNIH24 --cpus 2
+# Download KPNIH10
+datasets download genome accession GCA_000281435.2 \
+  --include genome \
+  --filename results/genome_downloads/KPNIH10.zip
 
-# Sample 8: KPNIH27
-snippy --ref results/chromosomes_only/KPPR1.fna \
-  --ctgs results/chromosomes_only/KPNIH27.fna \
-  --outdir results/snippy_KPNIH27 --cpus 2
+# Download KPNIH1
+datasets download genome accession GCA_000281535.1 \
+  --include genome \
+  --filename results/genome_downloads/KPNIH1.zip
 
-# Sample 9: KPNIH29
-snippy --ref results/chromosomes_only/KPPR1.fna \
-  --ctgs results/chromosomes_only/KPNIH29.fna \
-  --outdir results/snippy_KPNIH29 --cpus 2
+# Download KPNIH24
+datasets download genome accession GCA_000714675.1 \
+  --include genome \
+  --filename results/genome_downloads/KPNIH24.zip
+
+# Download KPNIH27
+datasets download genome accession GCA_000695935.1 \
+  --include genome \
+  --filename results/genome_downloads/KPNIH27.zip
+
+# Download KPNIH29
+datasets download genome accession GCA_000784945.1 \
+  --include genome \
+  --filename results/genome_downloads/KPNIH29.zip
 ```
 ### 1.3 Extract and Rename Genome FASTA Files
 
@@ -259,40 +271,43 @@ rm *.zip
 3. Click **Download Assembly** -> **Genomic FASTA (.fna)**.
 4. Move and rename the downloaded files into `~/phylogenetic_tree_project/results/chromosomes_only/` as `KPPR1.fna`, `MS6671.fna`, `NTUH-K2044.fna`, and `HS11286.fna`.
 
-### 1.3 Verify Downloaded Files
-```bash
-ls -lh ~/phylogenetic_tree_project/results/chromosomes_only/
-```
+### 1.4 Verify Downloaded Files
+cd ~/phylogenetic_tree_project
+
+ls -lh results/genomes/
+
+# Count the downloaded FASTA files
+find results/genomes -maxdepth 1 -type f -name '*.fna' | wc -l
 ✅ **Checkpoint**: You should see four `.fna` files, each typically between 5.0 MB and 5.6 MB in size.
 
 ---
 
 ## SECTION 2: Inspect Genome Assemblies
 
-Before running calculations, verify file integrity and review sequence structure.
+Before running Snippy, check that the ten FASTA files exist and inspect their sequence counts and lengths.
 
 ### 2.1 Calculate Assembly Summary Statistics
-Run `seqkit stats` to inspect sequence counts and genome lengths:
+
 ```bash
-seqkit stats ~/phylogenetic_tree_project/results/chromosomes_only/*.fna
-```
-*Expected Output:*
-Each genome should exhibit ~5.2–5.5 million base pairs (bp), characteristic of *Klebsiella pneumoniae*.
-
-### 2.2 Inspect FASTA Sequence Headers
-Confirm sequence formatting:
-
-# Move to the project directory first
 cd ~/phylogenetic_tree_project
 
-# Display the first three FASTA headers from each genome
-for file in results/chromosomes_only/*.fna; do
+seqkit stats results/genomes/*.fna
+```
+
+**Checkpoint:** Confirm that ten files are listed. Check the sequence count and total length for each assembly. Genome assemblies may contain multiple sequences, including plasmids, so total lengths and sequence counts can differ.
+
+### 2.2 Inspect FASTA Sequence Headers
+
+```bash
+for file in results/genomes/*.fna; do
     echo "=== $file ==="
-    grep '^>' "$file" | head -n 3
+    grep '^>' "$file" | head -n 5
 done
 ```
-> [!NOTE]
-> Sequence lines starting with `>` are FASTA headers. These summary checks confirm file presence and basic metrics, but they do not prove species purity, complete assembly, or absence of contamination.
+
+FASTA headers begin with `>`. Inspect them to identify the sequences included in each assembly.
+
+**Important:** These checks confirm file presence and basic sequence structure. They do not prove species purity, assembly completeness, or the absence of contamination. Verify the accession and chromosome/plasmid status before analysis.
 
 ---
 
@@ -357,13 +372,26 @@ Commit with this message:
 Update Snippy commands to use the genomes director
 
 ### 3.2 Verify Snippy Outputs
-Confirm that the output directories were created:
+
+After all nine Snippy commands have completed successfully, check that each sample has its own output directory.
+
 ```bash
-ls -lh results/snippy_MS6671/
-ls -lh results/snippy_NTUH-K2044/
-ls -lh results/snippy_HS11286/
+cd ~/phylogenetic_tree_project
+
+for strain in MS6671 NTUH-K2044 HS11286 MGH78578 \
+              KPNIH10 KPNIH1 KPNIH24 KPNIH27 KPNIH29
+do
+    echo "=== $strain ==="
+
+    if [ -d "results/snippy_${strain}" ]; then
+        ls "results/snippy_${strain}" | head
+    else
+        echo "ERROR: Output directory missing for $strain"
+    fi
+done
 ```
-✅ **Checkpoint**: Inside each directory, locate `snps.tab`, `snps.vcf`, and `snps.aligned.fa`.
+
+**Checkpoint:** Confirm that all nine output directories exist. Inspect the Snippy logs and expected output files for errors before proceeding to `snippy-core`.
 
 ---
 
@@ -381,41 +409,73 @@ snippy-core \
   results/snippy_NTUH-K2044 \
   results/snippy_HS11286
 ```
+## SECTION 4: Build the Core-Genome Alignment
 
-### 4.2 Inspect the Alignment Files
-Snippy-core outputs two key alignment files:
-1. `results/core3.full.aln`: Full multiple-sequence alignment containing all conserved positions.
-2. `results/core3.aln`: SNP-only alignment containing strictly variable sites.
+### 4.1 Run Snippy-core
 
-Verify sequence representation and lengths using `seqkit`:
-```bash
-seqkit fx2tab -n -l results/core3.full.aln
-seqkit fx2tab -n -l results/core3.aln
-```
-
-> [!WARNING]
-> Inspect alignment outputs for missing samples, excess ambiguous bases (`N`), or uneven sequence lengths. If using a SNP-only alignment for tree building, evaluate whether an ascertainment bias correction (e.g., `+ASC` in IQ-TREE) is required to account for the absence of invariant sites.
-
----
-
-##  SECTION 5: Construct the Tree with IQ-TREE 2
-
-### 5. Clean the Alignment and Account for Recombination
-
-*Klebsiella pneumoniae* can undergo recombination, which may affect the inferred phylogenetic relationships. First, clean the Snippy-core alignment, then use Gubbins to identify and filter likely recombinant regions.
-
-**Step 1: Clean the full core alignment**
+After all nine Snippy analyses have completed successfully, combine their results into a shared core-genome alignment.
 
 ```bash
 cd ~/phylogenetic_tree_project
 
-snippy-clean_full_aln results/core10.full.aln \
+snippy-core \
+  --ref results/genomes/KPPR1.fna \
+  --prefix results/core10 \
+  results/snippy_MS6671 \
+  results/snippy_NTUH-K2044 \
+  results/snippy_HS11286 \
+  results/snippy_MGH78578 \
+  results/snippy_KPNIH10 \
+  results/snippy_KPNIH1 \
+  results/snippy_KPNIH24 \
+  results/snippy_KPNIH27 \
+  results/snippy_KPNIH29
+```
+
+### 4.2 Inspect the Alignment Files
+
+The expected alignment files are:
+
+- `results/core10.full.aln` — the full core alignment.
+- `results/core10.aln` — the SNP-only alignment.
+
+Check the sequence counts and alignment lengths:
+
+```bash
+grep -c '^>' results/core10.full.aln
+seqkit stats results/core10.full.aln results/core10.aln
+```
+
+**Checkpoint:** The full alignment should contain ten sequences: the reference plus nine samples. Investigate any missing sequences, unexpected gaps, or excessive ambiguous bases before proceeding.
+
+**Important:** A successful sequence count alone does not establish that the alignment is biologically appropriate. Review the Snippy logs and alignment quality before building the tree.
+
+---
+
+## SECTION 5: Clean the Alignment and Build the Phylogenetic Tree
+
+### 5.1 Clean the Full Core Alignment
+
+Remove problematic alignment positions according to the Snippy cleaning utility's documented behavior.
+
+```bash
+cd ~/phylogenetic_tree_project
+
+snippy-clean_full_aln < results/core10.full.aln \
   > results/core10.clean.full.aln
 ```
 
-**Step 2: Run Gubbins**
+Check that the cleaned alignment exists:
 
-Gubbins must be installed in your active environment before running this command.
+```bash
+ls -lh results/core10.clean.full.aln
+```
+
+### 5.2 Optional Advanced Analysis: Recombination Filtering
+
+*Klebsiella pneumoniae* can undergo homologous recombination, which may affect inferred relationships. For a more advanced analysis, use Gubbins to identify likely recombinant regions.
+
+Gubbins must be installed, and the input alignment must meet its requirements.
 
 ```bash
 run_gubbins.py \
@@ -424,15 +484,33 @@ run_gubbins.py \
   results/core10.clean.full.aln
 ```
 
-**Step 3: Extract informative SNP sites**
+Inspect the files generated by your installed Gubbins version before selecting the alignment for tree inference. Do not assume every version produces identical filenames.
+
+### 5.3 Build a Preliminary Maximum-Likelihood Tree
+
+For a basic analysis using the cleaned full core alignment, run:
 
 ```bash
-snp-sites -c \
-  results/gubbins_core10.filtered_polymorphic_sites.fasta \
-  > results/core10.recombination_filtered_snps.aln
+iqtree2 \
+  -s results/core10.clean.full.aln \
+  -m MFP \
+  -B 1000 \
+  -T 2 \
+  --prefix results/klebsiella_tree
 ```
 
-The resulting alignment contains SNP sites from the recombination-filtered output, with columns restricted by `snp-sites -c`.
+This uses ModelFinder to select a suitable substitution model and performs 1,000 ultrafast bootstrap replicates.
+
+**Expected outputs**
+
+- `results/klebsiella_tree.treefile` — inferred maximum-likelihood tree.
+- `results/klebsiella_tree.iqtree` — analysis report.
+- `results/klebsiella_tree.contree` — consensus tree with branch support.
+
+Check the log for successful completion, the selected model, and any warnings.
+
+**Important:** This is a preliminary teaching workflow. For a final scientific analysis, assess alignment quality, missing data, recombination, reference suitability, and the effect of analysis choices. If you instead use a SNP-only alignment, assess ascertainment bias and select the appropriate IQ-TREE model options.
+
 
 ### 6. Build the Maximum-Likelihood Phylogenetic Tree
 
@@ -484,54 +562,43 @@ cat results/klebsiella_tree.treefile
 
 ---
 
-##  SECTION 6: Format and Visualize in iTOL
+## SECTION 6: Format and Visualize the Tree in iTOL
 
-### 6.1 Clean Label Prefixes for Display
-4. Combine Results with Snippy-core
-After Snippy has completed successfully for all nine sample genomes, combine the results into a core-genome alignment.
+### 6.1 Prepare Readable Labels
 
+First, inspect the inferred tree to confirm its actual tip labels.
+
+```bash
 cd ~/phylogenetic_tree_project
 
-snippy-core \
-  --ref results/genomes/KPPR1.fna \
-  --prefix results/core10 \
-  results/snippy_MS6671 \
-  results/snippy_NTUH-K2044 \
-  results/snippy_HS11286 \
-  results/snippy_MGH78578 \
-  results/snippy_KPNIH10 \
-  results/snippy_KPNIH1 \
-  results/snippy_KPNIH24 \
-  results/snippy_KPNIH27 \
-  results/snippy_KPNIH29
-Expected output files
+cat results/klebsiella_tree.treefile
+```
 
-results/core10.full.aln — the core alignment including invariant positions.
+Create a visualization copy with simpler labels:
 
-results/core10.aln — the core alignment containing variable SNP positions.
+```bash
+sed 's/snippy_//g; s/Reference/KPPR1/g' \
+  results/klebsiella_tree.treefile \
+  > results/klebsiella_tree_iTOL.tree
+```
 
-The alignment should represent the reference and nine sample genomes, provided all nine Snippy analyses completed successfully.
+This assumes the tree uses `Reference` for the reference tip and `snippy_` prefixes for sample tips. Check the tree first; if the actual labels differ, adjust the replacement accordingly.
 
-Quality check
+### 6.2 Upload the Tree to iTOL
 
-grep -c '^>' results/core10.full.aln
+1. Open [iTOL](https://itol.embl.de/).
+2. Upload `results/klebsiella_tree_iTOL.tree`.
+3. Check that all ten expected tips are present.
+4. Inspect the topology, branch lengths, and support values.
+5. Customize the display and export an SVG or PNG if needed.
 
-### 6.2 Upload to iTOL
-1. Open the [iTOL (Interactive Tree Of Life)](https://itol.embl.de/) portal in your browser.
-2. Click **Upload tree files** in the top navigation bar.
-3. If using WSL, quickly open your results folder in Windows Explorer:
-   ```bash
-   explorer.exe "\\((wslpath -w "\\)PWD/results")"
-   ```
-4. Drag and drop `klebsiella_tree_iTOL.tree` into the iTOL upload box.
+If you use Windows Subsystem for Linux (WSL), you can open the results directory in Windows Explorer:
 
-### 6.3 Recommended Display Settings for Beginners
-- **Tree Structure**: Choose **Rectangular** layout for clear cladogram/phylogram inspection.
-- **Branch Lengths**: Toggle to **Real** so branch distances reflect estimated mutations per site.
-- **Internal Node Support**: Turn on **Display bootstrap values** as text or symbols to show reproducibility scores.
-- **Exporting**: Click the **Export** tab and select **SVG** (vector graphic for presentations/papers) or **PNG** (high-resolution image).
+```bash
+explorer.exe "$(wslpath -w "$PWD/results")"
+```
 
----
+**Interpretation reminder:** Genetic similarity alone does not prove direct transmission between patients or establish the direction of transmission.
 
 ##  SECTION 7: Scientific Interpretation & Common Traps
 
@@ -561,9 +628,11 @@ Before presenting or publishing results, review this checklist:
 ## SECTION 9: Reproducibility Log
 
 Execute this script to capture exact software versions in your results directory:
-```bash
+
+cd ~/phylogenetic_tree_project
+
 {
-  echo "Execution Date: \$(date -Is)"
+  echo "Execution Date: $(date -Is)"
   echo "---------------------------"
   echo "Snippy Version:"
   snippy --version
@@ -571,11 +640,11 @@ Execute this script to capture exact software versions in your results directory
   iqtree2 --version
   echo "SeqKit Version:"
   seqkit version
+  echo "NCBI Datasets Version:"
+  datasets version
 } > results/software_versions.txt
 
 cat results/software_versions.txt
-```
-
 ---
 
 ##  SECTION 10: Troubleshooting FAQ
