@@ -164,14 +164,90 @@ snippy --ref results/chromosomes_only/KPPR1.fna \
   --ctgs results/chromosomes_only/KPNIH29.fna \
   --outdir results/snippy_KPNIH29 --cpus 2
 ```
+### 1.3 Extract and Rename Genome FASTA Files
 
+NCBI Datasets downloads each assembly as a ZIP archive. Extract the archives and copy the genomic FASTA files into a single directory with consistent strain names.
 
+**Step 1: Create the output directory**
 
-# Unzip and rename files
-unzip -p KPPR1.zip ncbi_dataset/data/GCF_000240185.1/*.fna > KPPR1.fna
-unzip -p MS6671.zip ncbi_dataset/data/GCF_001010365.1/*.fna > MS6671.fna
-unzip -p NTUH-K2044.zip ncbi_dataset/data/GCF_000025705.1/*.fna > NTUH-K2044.fna
-unzip -p HS11286.zip ncbi_dataset/data/GCF_000222155.1/*.fna > HS11286.fna
+```bash
+mkdir -p results/genomes
+mkdir -p results/genome_downloads/extracted
+```
+
+**Step 2: Extract and rename all ten genome files**
+
+Run these commands from the root of the project directory.
+
+```bash
+cd ~/phylogenetic_tree_project
+
+# Process all ten genome archives
+for strain in KPPR1 MS6671 NTUH-K2044 HS11286 \
+              MGH78578 KPNIH10 KPNIH1 KPNIH24 KPNIH27 KPNIH29
+do
+    echo "Processing ${strain}..."
+
+    archive="results/genome_downloads/${strain}.zip"
+    extract_dir="results/genome_downloads/extracted/${strain}"
+
+    # Check that the downloaded archive exists
+    if [ ! -f "$archive" ]; then
+        echo "ERROR: Archive not found: $archive"
+        continue
+    fi
+
+    # Extract the archive
+    mkdir -p "$extract_dir"
+    unzip -oq "$archive" -d "$extract_dir"
+
+    # Locate the genomic FASTA file
+    fasta=$(find "$extract_dir/ncbi_dataset/data" \
+        -type f -name '*_genomic.fna' -print -quit)
+
+    # Copy it to the standard strain filename
+    if [ -n "$fasta" ]; then
+        cp "$fasta" "results/genomes/${strain}.fna"
+        echo "Saved: results/genomes/${strain}.fna"
+    else
+        echo "ERROR: Genomic FASTA not found for ${strain}"
+    fi
+done
+```
+
+**Step 3: Verify the renamed files**
+
+```bash
+ls -lh results/genomes/
+```
+
+The directory should contain these ten FASTA files:
+
+```text
+KPPR1.fna
+MS6671.fna
+NTUH-K2044.fna
+HS11286.fna
+MGH78578.fna
+KPNIH10.fna
+KPNIH1.fna
+KPNIH24.fna
+KPNIH27.fna
+KPNIH29.fna
+```
+
+**Step 4: Inspect the sequence headers**
+
+```bash
+for file in results/genomes/*.fna; do
+    echo "=== $file ==="
+    grep '^>' "$file" | head -n 5
+done
+```
+
+The headers help you identify the sequences included in each assembly.
+
+**Important quality-control note:** An assembly FASTA may contain both chromosome and plasmid sequences. The directory is therefore named `genomes`, not `chromosomes_only`. Do not assume these files contain only chromosomes. Verify their sequence headers and accession records before using them for chromosome-based phylogenetic analysis.
 
 # Clean up zip files
 rm *.zip
@@ -225,33 +301,60 @@ done
 ###  The Mental Model
 Think of the reference genome (**KPPR1**) as the original baseline edition of a dictionary. **Snippy** reads every sentence in your sample genomes (**MS6671**, **NTUH-K2044**, **HS11286**) and notes every spelling change, deletion, or insertion relative to the baseline.
 
-### 3.1 Execute Snippy for Each Sample
-Run Snippy separately for each sample assembly against the reference:
+3.1 Run Snippy for Each Sample
+Run Snippy separately for each of the nine sample genomes, using KPPR1 as the reference.
 
-```bash
 cd ~/phylogenetic_tree_project
 
 # Sample 1: MS6671
-snippy \
-  --ref results/chromosomes_only/KPPR1.fna \
-  --ctgs results/chromosomes_only/MS6671.fna \
-  --outdir results/snippy_MS6671 \
-  --cpus 2
+snippy --ref results/genomes/KPPR1.fna \
+  --ctgs results/genomes/MS6671.fna \
+  --outdir results/snippy_MS6671 --cpus 2
 
 # Sample 2: NTUH-K2044
-snippy \
-  --ref results/chromosomes_only/KPPR1.fna \
-  --ctgs results/chromosomes_only/NTUH-K2044.fna \
-  --outdir results/snippy_NTUH-K2044 \
-  --cpus 2
+snippy --ref results/genomes/KPPR1.fna \
+  --ctgs results/genomes/NTUH-K2044.fna \
+  --outdir results/snippy_NTUH-K2044 --cpus 2
 
 # Sample 3: HS11286
-snippy \
-  --ref results/chromosomes_only/KPPR1.fna \
-  --ctgs results/chromosomes_only/HS11286.fna \
-  --outdir results/snippy_HS11286 \
-  --cpus 2
-```
+snippy --ref results/genomes/KPPR1.fna \
+  --ctgs results/genomes/HS11286.fna \
+  --outdir results/snippy_HS11286 --cpus 2
+
+# Sample 4: MGH 78578
+snippy --ref results/genomes/KPPR1.fna \
+  --ctgs results/genomes/MGH78578.fna \
+  --outdir results/snippy_MGH78578 --cpus 2
+
+# Sample 5: KPNIH10
+snippy --ref results/genomes/KPPR1.fna \
+  --ctgs results/genomes/KPNIH10.fna \
+  --outdir results/snippy_KPNIH10 --cpus 2
+
+# Sample 6: KPNIH1
+snippy --ref results/genomes/KPPR1.fna \
+  --ctgs results/genomes/KPNIH1.fna \
+  --outdir results/snippy_KPNIH1 --cpus 2
+
+# Sample 7: KPNIH24
+snippy --ref results/genomes/KPPR1.fna \
+  --ctgs results/genomes/KPNIH24.fna \
+  --outdir results/snippy_KPNIH24 --cpus 2
+
+# Sample 8: KPNIH27
+snippy --ref results/genomes/KPPR1.fna \
+  --ctgs results/genomes/KPNIH27.fna \
+  --outdir results/snippy_KPNIH27 --cpus 2
+
+# Sample 9: KPNIH29
+snippy --ref results/genomes/KPPR1.fna \
+  --ctgs results/genomes/KPNIH29.fna \
+  --outdir results/snippy_KPNIH29 --cpus 2
+What this does: Each sample is compared with KPPR1, and each analysis is saved in its own output directory. The nine output directories will later be combined to create the core alignment.
+
+Commit with this message:
+
+Update Snippy commands to use the genomes director
 
 ### 3.2 Verify Snippy Outputs
 Confirm that the output directories were created:
@@ -297,9 +400,62 @@ seqkit fx2tab -n -l results/core3.aln
 
 ##  SECTION 5: Construct the Tree with IQ-TREE 2
 
-###  The Mental Model
-IQ-TREE 2 evaluates evolutionary models using **ModelFinder** and tests thousands of branching patterns to find the tree that best explains your alignment using Maximum Likelihood. It resamples positions 1,000 times (**Ultrafast Bootstrap**) to determine confidence scores for each branch.
+### 5. Clean the Alignment and Account for Recombination
 
+*Klebsiella pneumoniae* can undergo recombination, which may affect the inferred phylogenetic relationships. First, clean the Snippy-core alignment, then use Gubbins to identify and filter likely recombinant regions.
+
+**Step 1: Clean the full core alignment**
+
+```bash
+cd ~/phylogenetic_tree_project
+
+snippy-clean_full_aln results/core10.full.aln \
+  > results/core10.clean.full.aln
+```
+
+**Step 2: Run Gubbins**
+
+Gubbins must be installed in your active environment before running this command.
+
+```bash
+run_gubbins.py \
+  --prefix results/gubbins_core10 \
+  --threads 2 \
+  results/core10.clean.full.aln
+```
+
+**Step 3: Extract informative SNP sites**
+
+```bash
+snp-sites -c \
+  results/gubbins_core10.filtered_polymorphic_sites.fasta \
+  > results/core10.recombination_filtered_snps.aln
+```
+
+The resulting alignment contains SNP sites from the recombination-filtered output, with columns restricted by `snp-sites -c`.
+
+### 6. Build the Maximum-Likelihood Phylogenetic Tree
+
+The alignment produced above contains variable SNP sites only. Use an ascertainment-bias correction when inferring the tree from this SNP-only alignment.
+
+```bash
+iqtree2 \
+  -s results/core10.recombination_filtered_snps.aln \
+  -m MFP+ASC \
+  -B 1000 \
+  -T 2 \
+  --prefix results/klebsiella_tree
+```
+
+**Expected outputs**
+
+- `results/klebsiella_tree.treefile` — maximum-likelihood tree.
+- `results/klebsiella_tree.iqtree` — analysis report, including the selected model.
+- `results/klebsiella_tree.contree` — consensus tree with branch support.
+
+Check the IQ-TREE log to confirm that the analysis completed successfully and that the model and ascertainment correction were applied as intended.
+
+**Important:** This workflow requires `snippy-clean_full_aln`, `run_gubbins.py`, `snp-sites`, and `iqtree2` to be installed and available in the active environment. Do not interpret the tree until the alignment quality and genome labels have been checked.
 ### 5.1 Run Tree Inference
 ```bash
 iqtree2 \
@@ -331,11 +487,34 @@ cat results/klebsiella_tree.treefile
 ##  SECTION 6: Format and Visualize in iTOL
 
 ### 6.1 Clean Label Prefixes for Display
-By default, sample names in the tree file may retain the folder prefix `snippy_`. Strip this prefix using `sed` to create a clean display tree without altering topology or branch lengths:
-```bash
-sed 's/snippy_//g' results/klebsiella_tree.treefile > results/klebsiella_tree_iTOL.tree
-cat results/klebsiella_tree_iTOL.tree
-```
+4. Combine Results with Snippy-core
+After Snippy has completed successfully for all nine sample genomes, combine the results into a core-genome alignment.
+
+cd ~/phylogenetic_tree_project
+
+snippy-core \
+  --ref results/genomes/KPPR1.fna \
+  --prefix results/core10 \
+  results/snippy_MS6671 \
+  results/snippy_NTUH-K2044 \
+  results/snippy_HS11286 \
+  results/snippy_MGH78578 \
+  results/snippy_KPNIH10 \
+  results/snippy_KPNIH1 \
+  results/snippy_KPNIH24 \
+  results/snippy_KPNIH27 \
+  results/snippy_KPNIH29
+Expected output files
+
+results/core10.full.aln — the core alignment including invariant positions.
+
+results/core10.aln — the core alignment containing variable SNP positions.
+
+The alignment should represent the reference and nine sample genomes, provided all nine Snippy analyses completed successfully.
+
+Quality check
+
+grep -c '^>' results/core10.full.aln
 
 ### 6.2 Upload to iTOL
 1. Open the [iTOL (Interactive Tree Of Life)](https://itol.embl.de/) portal in your browser.
