@@ -116,13 +116,56 @@ Before analysis, always verify the assembly identity and sequence contents for e
 
 #### Option A: One-Liner Download via NCBI Datasets CLI (Recommended)
 ```bash
-cd ~/phylogenetic_tree_project/results/chromosomes_only
+# Move to the project directory
+cd ~/phylogenetic_tree_project
 
-# Download genomes using NCBI Datasets CLI
-datasets download genome accession GCF_000240185.1 --filename KPPR1.zip
-datasets download genome accession GCF_001010365.1 --filename MS6671.zip
-datasets download genome accession GCF_000025705.1 --filename NTUH-K2044.zip
-datasets download genome accession GCF_000222155.1 --filename HS11286.zip
+# Sample 1: MS6671
+snippy --ref results/chromosomes_only/KPPR1.fna \
+  --ctgs results/chromosomes_only/MS6671.fna \
+  --outdir results/snippy_MS6671 --cpus 2
+
+# Sample 2: NTUH-K2044
+snippy --ref results/chromosomes_only/KPPR1.fna \
+  --ctgs results/chromosomes_only/NTUH-K2044.fna \
+  --outdir results/snippy_NTUH-K2044 --cpus 2
+
+# Sample 3: HS11286
+snippy --ref results/chromosomes_only/KPPR1.fna \
+  --ctgs results/chromosomes_only/HS11286.fna \
+  --outdir results/snippy_HS11286 --cpus 2
+
+# Sample 4: MGH 78578
+snippy --ref results/chromosomes_only/KPPR1.fna \
+  --ctgs results/chromosomes_only/MGH78578.fna \
+  --outdir results/snippy_MGH78578 --cpus 2
+
+# Sample 5: KPNIH10
+snippy --ref results/chromosomes_only/KPPR1.fna \
+  --ctgs results/chromosomes_only/KPNIH10.fna \
+  --outdir results/snippy_KPNIH10 --cpus 2
+
+# Sample 6: KPNIH1
+snippy --ref results/chromosomes_only/KPPR1.fna \
+  --ctgs results/chromosomes_only/KPNIH1.fna \
+  --outdir results/snippy_KPNIH1 --cpus 2
+
+# Sample 7: KPNIH24
+snippy --ref results/chromosomes_only/KPPR1.fna \
+  --ctgs results/chromosomes_only/KPNIH24.fna \
+  --outdir results/snippy_KPNIH24 --cpus 2
+
+# Sample 8: KPNIH27
+snippy --ref results/chromosomes_only/KPPR1.fna \
+  --ctgs results/chromosomes_only/KPNIH27.fna \
+  --outdir results/snippy_KPNIH27 --cpus 2
+
+# Sample 9: KPNIH29
+snippy --ref results/chromosomes_only/KPPR1.fna \
+  --ctgs results/chromosomes_only/KPNIH29.fna \
+  --outdir results/snippy_KPNIH29 --cpus 2
+```
+
+
 
 # Unzip and rename files
 unzip -p KPPR1.zip ncbi_dataset/data/GCF_000240185.1/*.fna > KPPR1.fna
