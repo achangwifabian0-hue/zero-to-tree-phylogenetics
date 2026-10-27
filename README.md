@@ -93,13 +93,26 @@ mkdir -p ~/phylogenetic_tree_project/results/chromosomes_only
 cd ~/phylogenetic_tree_project
 pwd
 ```
+### 1.2 Download Genomes from NCBI
 
-### 1.2 Download Genomes from NCBI (The Missing Link)
-We will compare three *Klebsiella pneumoniae* isolates against the standard reference strain **KPPR1**:
-- **Reference**: `KPPR1` (ATCC 43816 / RefSeq: `GCF_000240185.1`)
-- **Sample 1**: `MS6671` (Accession: `GCF_001010365.1`)
-- **Sample 2**: `NTUH-K2044` (Accession: `GCF_000025705.1`)
-- **Sample 3**: `HS11286` (Accession: `GCF_000222155.1`)
+This tutorial uses ten *Klebsiella pneumoniae* genome assemblies: one reference genome and nine additional strains. Assembly accessions identify the exact genome records used in the analysis.
+
+| Role | Strain | Assembly accession |
+|---|---|---|
+| Reference | KPPR1 | `GCF_000742755.1` |
+| Sample 1 | MS6671 | `GCF_001455995.1` |
+| Sample 2 | NTUH-K2044 | `GCF_000009885.1` |
+| Sample 3 | HS11286 | `GCF_000240185.1` |
+| Sample 4 | MGH 78578 | `GCF_000016305.1` |
+| Sample 5 | KPNIH10 | `GCA_000281435.2` |
+| Sample 6 | KPNIH1 | `GCA_000281535.2` |
+| Sample 7 | KPNIH24 | `GCA_000714675.1` |
+| Sample 8 | KPNIH27 | `GCA_000695935.1` |
+| Sample 9 | KPNIH29 | `GCA_000784945.1` |
+
+**Important:** The `GCF_` and `GCA_` prefixes refer to different NCBI assembly records. Both can identify genome assemblies, but the exact accession must be retained when downloading and documenting each genome.
+
+Before analysis, always verify the assembly identity and sequence contents for every strain. This dataset is intended for this teaching workflow, not as a substitute for selecting epidemiologically appropriate isolates for a research study.
 
 #### Option A: One-Liner Download via NCBI Datasets CLI (Recommended)
 ```bash
@@ -149,10 +162,14 @@ Each genome should exhibit ~5.2–5.5 million base pairs (bp), characteristic of
 
 ### 2.2 Inspect FASTA Sequence Headers
 Confirm sequence formatting:
-```bash
+
+# Move to the project directory first
+cd ~/phylogenetic_tree_project
+
+# Display the first three FASTA headers from each genome
 for file in results/chromosomes_only/*.fna; do
-  echo "=== \$file ==="
-  grep '^>' "\$file" | head -n 3
+    echo "=== $file ==="
+    grep '^>' "$file" | head -n 3
 done
 ```
 > [!NOTE]
